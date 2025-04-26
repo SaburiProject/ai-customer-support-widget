@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chat Widget</title>
 
   <style>
@@ -16,7 +16,7 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 320px;
+      width: 360px;
       height: 0;
       background: white;
       border-radius: 10px;
@@ -27,7 +27,7 @@
     }
 
     #chat-widget.expanded {
-      height: 400px;
+      height: 500px;
     }
 
     .chat-header {
@@ -167,8 +167,31 @@
       z-index: 1001;
       display: none;
     }
+
+    #suggestions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px;
+    }
+
+    .suggestion-btn {
+      background: #f1f1f1;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .suggestion-btn:hover {
+      background: #ddd;
+    }
   </style>
 </head>
+
 <body>
 
 <!-- Floating Chat Button -->
@@ -199,6 +222,7 @@
 
     <div id="chat-container">
       <div id="messages-container"></div>
+      <div id="suggestions"></div>
       <div class="chat-input-container">
         <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
         <button class="chat-option" onclick="sendMessage()">Send</button>
@@ -214,11 +238,24 @@
   const leadForm = document.getElementById('lead-form');
   const chatContainer = document.getElementById('chat-container');
   const messagesContainer = document.getElementById('messages-container');
+  const suggestions = document.getElementById('suggestions');
   const chatInput = document.getElementById('chat-input');
   const backBtn = document.getElementById('back-btn');
   const startChatBtn = document.getElementById('start-chat-btn');
 
+  const allQuestions = [
+    "What is non-surgical hair replacement?",
+    "Where are your centers located?",
+    "How much does a hair patch cost?",
+    "How long does a hair system last?",
+    "Do you offer free consultation?",
+    "Is it painful to wear a hair patch?",
+    "What type of hair do you use?",
+    "How can I book an appointment?"
+  ];
+
   let isWidgetOpen = false;
+  let suggestionsShown = false; // ✅ NEW FLAG
 
   toggleBtn.addEventListener('click', (event) => {
     event.stopPropagation();
@@ -232,6 +269,10 @@
       widget.classList.remove('expanded');
       isWidgetOpen = false;
     }
+  });
+
+  widget.addEventListener('click', function(event) {
+    event.stopPropagation();
   });
 
   function redirectToWhatsApp() {
@@ -251,6 +292,8 @@
     messagesContainer.innerHTML = '';
     startChatBtn.disabled = false;
     backBtn.style.display = 'none';
+    suggestions.innerHTML = '';
+    suggestionsShown = false; // ✅ Reset if user goes back
   }
 
   async function submitLeadForm() {
@@ -267,6 +310,7 @@
     chatContainer.classList.add('active');
     backBtn.style.display = 'block';
     appendMessage('Hello! 👋 How can I help you today?', true);
+    renderSuggestions(); // ✅ Show suggestions when chat starts
 
     try {
       await fetch('https://script.google.com/macros/s/AKfycbwDn7lIBNPuJmb8sE1x7Zp9zrNQn5dE0jTMN4XpKeHKAuc_0sbg5Q--a7leGbeoTXgKsQ/exec', {
@@ -284,25 +328,41 @@
     messageDiv.classList.add('message', isBot ? 'bot-message' : 'user-message');
     messageDiv.textContent = message;
     messagesContainer.appendChild(messageDiv);
-
     setTimeout(() => {
       messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 50);
   }
 
-  async function sendMessage() {
-    const message = chatInput.value.trim();
-    if (!message) return;
+  function renderSuggestions() {
+    if (suggestionsShown) return; // ✅ If clicked once, don't show again
+    suggestions.innerHTML = '';
+    const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+    shuffled.slice(0, 4).forEach(q => {
+      const btn = document.createElement('button');
+      btn.classList.add('suggestion-btn');
+      btn.innerText = q;
+      btn.onclick = (event) => {
+        event.stopPropagation();
+        handleSuggestionClick(q);
+      };
+      suggestions.appendChild(btn);
+    });
+  }
 
-    appendMessage(message, false);
-    chatInput.value = '';
+  function handleSuggestionClick(question) {
+    appendMessage(question, false);
+    sendQuestionToBot(question);
+    suggestions.innerHTML = '';
+    suggestionsShown = true; // ✅ Mark as clicked once
+  }
 
+  async function sendQuestionToBot(question) {
     try {
       const response = await fetch('http://127.0.0.1:5000/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: message,
+          query: question,
           phone: '9137279145',
           language: 'english'
         })
@@ -321,7 +381,17 @@
       sendMessage();
     }
   }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    appendMessage(message, false);
+    chatInput.value = '';
+    suggestions.innerHTML = '';
+    await sendQuestionToBot(message);
+  }
 </script>
+
 
 </body>
 </html>
