@@ -1,0 +1,11 @@
+flask
+flask-cors
+openai
+pinecone-client
+python-dotenv
+langchain
+langchain-openai
+langchain-core
+langchain-pinecone
+langchain-huggingface
+huggingface-hub
