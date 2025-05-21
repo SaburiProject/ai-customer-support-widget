@@ -206,6 +206,23 @@
       display: none;
       transition: color 0.3s ease;
     }
+    #close-btn {
+    position: absolute;
+    top: 12px;
+    right: 45px;
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1001;
+    display: block;
+    transition: color 0.3s ease;
+    }
+
+    #close-btn:hover {
+    color: #E0E0E0;
+    }
 
     #back-btn:hover {
       color: #E0E0E0;
@@ -254,6 +271,7 @@
   <div class="chat-header">
     Chat with Us
     <button id="back-btn" onclick="goBack()">←</button>
+    <button id="close-btn" onclick="closeChat()">×</button>
   </div>
   <div class="chat-content">
     <div id="options-container" class="active">
@@ -343,6 +361,10 @@
     suggestions.innerHTML = '';
     suggestionsShown = false;
   }
+  function closeChat() {
+  widget.classList.remove('expanded');
+  isWidgetOpen = false;
+}
 
   async function submitLeadForm() {
     const name = document.getElementById('name-input').value.trim();
@@ -410,7 +432,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: question,
+          comment: question,
           language: 'english'
         })
       });
