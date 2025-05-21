@@ -2,41 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat Widget</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Neomorphic Chat Widget</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', Arial, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
     #chat-widget {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 360px;
+      width: 95vw;
+      max-width: 360px;
       height: 0;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      background: #f5f5f5;
+      border-radius: 20px;
+      box-shadow: 
+        10px 10px 20px rgba(0, 0, 0, 0.05), 
+        -10px -10px 20px rgba(255, 255, 255, 0.9);
       overflow: hidden;
       transition: height 0.3s ease;
       z-index: 1000;
     }
 
     #chat-widget.expanded {
-      height: 500px;
+      height: 80vh;
+    }
+
+    @media (max-width: 400px) {
+      #toggle-chat-btn {
+        bottom: 80px;
+      }
     }
 
     .chat-header {
-      background: #1a73e8;
+      background: linear-gradient(145deg, #6495ED, #5A81C7);
       color: white;
       padding: 15px;
       font-weight: 600;
-      border-radius: 10px 10px 0 0;
+      border-radius: 20px 20px 0 0;
       position: relative;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .chat-content {
@@ -62,20 +76,26 @@
     }
 
     .chat-option {
-      background: #1a73e8;
-      color: white;
+      background: #f5f5f5;
+      color: #6495ED;
       border: none;
       width: 100%;
       padding: 12px;
       margin: 8px 0;
-      border-radius: 5px;
+      border-radius: 15px;
       cursor: pointer;
       font-size: 14px;
-      transition: background-color 0.2s;
+      box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.05), 
+        -5px -5px 10px rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
     }
 
     .chat-option:hover {
-      background: #1557b0;
+      box-shadow: 
+        inset 5px 5px 10px rgba(0, 0, 0, 0.05), 
+        inset -5px -5px 10px rgba(255, 255, 255, 0.9);
+      color: #4A7ABD;
     }
 
     #lead-form {
@@ -86,8 +106,12 @@
       width: 100%;
       padding: 10px;
       margin: 8px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      border: none;
+      border-radius: 15px;
+      background: #f5f5f5;
+      box-shadow: 
+        inset 5px 5px 10px rgba(0, 0, 0, 0.05), 
+        inset -5px -5px 10px rgba(255, 255, 255, 0.9);
       box-sizing: border-box;
     }
 
@@ -103,33 +127,43 @@
       max-width: 80%;
       margin: 8px;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 15px;
       word-wrap: break-word;
     }
 
     .user-message {
-      background: #e3f2fd;
+      background: linear-gradient(145deg, #E6E9F0, #F5F7FA);
       margin-left: auto;
-      border-bottom-right-radius: 2px;
+      border-bottom-right-radius: 5px;
+      box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.05), 
+        -5px -5px 10px rgba(255, 255, 255, 0.9);
     }
 
     .bot-message {
-      background: #f5f5f5;
+      background: linear-gradient(145deg, #F5F5F5, #FFFFFF);
       margin-right: auto;
-      border-bottom-left-radius: 2px;
+      border-bottom-left-radius: 5px;
+      box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.05), 
+        -5px -5px 10px rgba(255, 255, 255, 0.9);
     }
 
     .chat-input-container {
       padding: 10px;
-      background: white;
-      border-top: 1px solid #eee;
+      background: #f5f5f5;
+      border-top: 1px solid #E0E0E0;
     }
 
     #chat-input {
       width: calc(100% - 20px);
       padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      border: none;
+      border-radius: 15px;
+      background: #f5f5f5;
+      box-shadow: 
+        inset 5px 5px 10px rgba(0, 0, 0, 0.05), 
+        inset -5px -5px 10px rgba(255, 255, 255, 0.9);
       margin-bottom: 5px;
     }
 
@@ -140,19 +174,23 @@
       width: 60px;
       height: 60px;
       border-radius: 30px;
-      background: #1a73e8;
-      color: white;
+      background: #f5f5f5;
+      color: #6495ED;
       border: none;
       cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
+      box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.1), 
+        -5px -5px 10px rgba(255, 255, 255, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: all 0.3s ease;
     }
 
     #toggle-chat-btn:hover {
-      background: #1557b0;
+      box-shadow: 
+        inset 5px 5px 10px rgba(0, 0, 0, 0.1), 
+        inset -5px -5px 10px rgba(255, 255, 255, 0.9);
     }
 
     #back-btn {
@@ -166,6 +204,11 @@
       cursor: pointer;
       z-index: 1001;
       display: none;
+      transition: color 0.3s ease;
+    }
+
+    #back-btn:hover {
+      color: #E0E0E0;
     }
 
     #suggestions {
@@ -177,21 +220,26 @@
     }
 
     .suggestion-btn {
-      background: #f1f1f1;
+      background: #f5f5f5;
       border: none;
-      border-radius: 20px;
+      border-radius: 15px;
       padding: 8px 10px;
       cursor: pointer;
       font-size: 13px;
       text-align: center;
+      box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.05), 
+        -5px -5px 10px rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
     }
 
     .suggestion-btn:hover {
-      background: #ddd;
+      box-shadow: 
+        inset 5px 5px 10px rgba(0, 0, 0, 0.05), 
+        inset -5px -5px 10px rgba(255, 255, 255, 0.9);
     }
   </style>
 </head>
-
 <body>
 
 <!-- Floating Chat Button -->
@@ -244,18 +292,18 @@
   const startChatBtn = document.getElementById('start-chat-btn');
 
   const allQuestions = [
-    "What is non-surgical hair replacement?",
-    "Where are your centers located?",
-    "How much does a hair patch cost?",
-    "How long does a hair system last?",
-    "Do you offer free consultation?",
-    "Is it painful to wear a hair patch?",
-    "What type of hair do you use?",
+    "Will the hair patch look natural or will people notice",
+    "Will I need to shave my head for the hair patch",
+    "How much does it cost and how long does it last",
+    "How do I know which hair patch is right for me",
+    "How do I maintain the hair patch?",
+    "Can I swim or work out while wearing it?",
+    "What if I have very little or no hair on top?",
     "How can I book an appointment?"
   ];
 
   let isWidgetOpen = false;
-  let suggestionsShown = false; // ✅ NEW FLAG
+  let suggestionsShown = false;
 
   toggleBtn.addEventListener('click', (event) => {
     event.stopPropagation();
@@ -293,7 +341,7 @@
     startChatBtn.disabled = false;
     backBtn.style.display = 'none';
     suggestions.innerHTML = '';
-    suggestionsShown = false; // ✅ Reset if user goes back
+    suggestionsShown = false;
   }
 
   async function submitLeadForm() {
@@ -310,7 +358,7 @@
     chatContainer.classList.add('active');
     backBtn.style.display = 'block';
     appendMessage('Hello! 👋 How can I help you today?', true);
-    renderSuggestions(); // ✅ Show suggestions when chat starts
+    renderSuggestions();
 
     try {
       await fetch('https://script.google.com/macros/s/AKfycbwDn7lIBNPuJmb8sE1x7Zp9zrNQn5dE0jTMN4XpKeHKAuc_0sbg5Q--a7leGbeoTXgKsQ/exec', {
@@ -334,7 +382,7 @@
   }
 
   function renderSuggestions() {
-    if (suggestionsShown) return; // ✅ If clicked once, don't show again
+    if (suggestionsShown) return;
     suggestions.innerHTML = '';
     const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
     shuffled.slice(0, 4).forEach(q => {
@@ -353,23 +401,22 @@
     appendMessage(question, false);
     sendQuestionToBot(question);
     suggestions.innerHTML = '';
-    suggestionsShown = true; // ✅ Mark as clicked once
+    suggestionsShown = true;
   }
 
   async function sendQuestionToBot(question) {
     try {
-      const response = await fetch('http://127.0.0.1:5000/chat', {
+      const response = await fetch('https://ahl-widget-endpoint-77153758771.asia-south1.run.app/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: question,
-          phone: '9137279145',
+          comment: question,
           language: 'english'
         })
       });
 
       const data = await response.json();
-      appendMessage(data.response, true);
+      appendMessage(data.reply || data.response || "Okay, noted!", true);
     } catch (error) {
       console.error('Error sending message:', error);
       appendMessage('Sorry, there was an error processing your message.', true);
@@ -391,7 +438,6 @@
     await sendQuestionToBot(message);
   }
 </script>
-
 
 </body>
 </html>
