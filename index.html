@@ -432,9 +432,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          comment: question,
-          language: 'english'
-        })
+        query: question,
+        language: 'english'
+      })
+
       });
 
       const data = await response.json();
